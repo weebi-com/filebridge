@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:file_picker/file_picker.dart';
 import 'package:filebridge/filebridge.dart';
 import 'package:flutter/foundation.dart';
@@ -5,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FilePickerDemo extends StatefulWidget {
+  const FilePickerDemo({Key? key}) : super(key: key);
   @override
-  _FilePickerDemoState createState() => _FilePickerDemoState();
+  FilePickerDemoState createState() => FilePickerDemoState();
 }
 
-class _FilePickerDemoState extends State<FilePickerDemo> {
+class FilePickerDemoState extends State<FilePickerDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   final _defaultFileNameController = TextEditingController();
@@ -103,7 +106,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         _userAborted = path == null;
       });
     } on PlatformException catch (e) {
-      _logException('Unsupported operation' + e.toString());
+      _logException('Unsupported operation $e');
     } catch (e) {
       _logException(e.toString());
     } finally {
@@ -129,7 +132,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         _userAborted = fileName == null;
       });
     } on PlatformException catch (e) {
-      _logException('Unsupported operation' + e.toString());
+      _logException('Unsupported operation $e');
     } catch (e) {
       _logException(e.toString());
     } finally {
@@ -214,7 +217,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     SizedBox(
                       width: 400,
                       child: TextField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Dialog Title',
                         ),
@@ -224,7 +227,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     SizedBox(
                       width: 400,
                       child: TextField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Initial Directory',
                         ),
@@ -234,7 +237,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     SizedBox(
                       width: 400,
                       child: TextField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Default File Name',
                         ),
@@ -247,14 +250,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                         value: _pickingType,
                         icon: const Icon(Icons.expand_more),
                         alignment: Alignment.centerLeft,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                         ),
                         items: FileType.values
                             .map(
                               (fileType) => DropdownMenuItem<FileType>(
-                                child: Text(fileType.toString()),
                                 value: fileType,
+                                child: Text(fileType.toString()),
                               ),
                             )
                             .toList(),
@@ -272,7 +275,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                         ? SizedBox(
                             width: 400,
                             child: TextFormField(
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'File Extension',
                                   hintText: 'jpg, png, gif'),
@@ -297,7 +300,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     SizedBox(
                       width: 400.0,
                       child: SwitchListTile.adaptive(
-                        title: Text(
+                        title: const Text(
                           'Lock parent window',
                           textAlign: TextAlign.left,
                         ),
@@ -309,7 +312,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     ConstrainedBox(
                       constraints: const BoxConstraints.tightFor(width: 400.0),
                       child: SwitchListTile.adaptive(
-                        title: Text(
+                        title: const Text(
                           'Pick multiple files',
                           textAlign: TextAlign.left,
                         ),
@@ -320,17 +323,17 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
-                Divider(),
-                SizedBox(
+                const Divider(),
+                const SizedBox(
                   height: 20.0,
                 ),
-                Text(
+                const Text(
                   'Actions',
                   textAlign: TextAlign.start,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -376,14 +379,12 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     ],
                   ),
                 ),
-                Divider(),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
+                const Divider(),
+                const SizedBox(height: 20.0),
+                const Text(
                   'File Picker Result',
                   textAlign: TextAlign.start,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -391,14 +392,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                 Builder(
                   builder: (BuildContext context) => _isLoading
                       ? Row(
-                          children: [
+                          children: const [
                             Expanded(
                               child: Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding: EdgeInsets.symmetric(
                                     vertical: 40.0,
                                   ),
-                                  child: const CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(),
                                 ),
                               ),
                             ),
@@ -406,7 +407,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                         )
                       : _userAborted
                           ? Row(
-                              children: [
+                              children: const [
                                 Expanded(
                                   child: Center(
                                     child: SizedBox(
@@ -417,7 +418,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                                         ),
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 40.0),
-                                        title: const Text(
+                                        title: Text(
                                           'User has aborted the dialog',
                                         ),
                                       ),

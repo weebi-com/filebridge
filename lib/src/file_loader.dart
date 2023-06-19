@@ -1,7 +1,7 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show File, Platform;
+import 'dart:io' show Directory, File, Platform;
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
@@ -30,6 +30,16 @@ abstract class FileLoaderMonolith {
         lockParentWindow: true,
         allowMultiple: false);
     return File(result?.files.first.path ?? '');
+  }
+
+  static Future<Directory> loadFolderFromUserPick() async {
+    final initialDirectory = (await getApplicationDocumentsDirectory()).path;
+    final String? result = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: 'Choix du dossier contenant les photos',
+      initialDirectory: initialDirectory,
+      lockParentWindow: true,
+    );
+    return Directory(result ?? '');
   }
 
   static Future<List<List<dynamic>>> decodeExcelFilePath(
