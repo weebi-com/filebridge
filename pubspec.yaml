@@ -1,7 +1,7 @@
 name: filebridge
 description: file imports and exports 
 version: 0.0.1
-homepage: weebi.com
+homepage: http://weebi.com/
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
