@@ -2,6 +2,7 @@ name: filebridge_example
 description: file imports and exports 
 version: 0.0.1
 homepage: weebi.com
+publish_to: none
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -16,8 +17,7 @@ dependencies:
   path_provider: ^2.0.15 #^2.0.1 #keep it low 'cause migration is heavy
   spreadsheet_decoder: ^2.2.0
   filebridge:
-    git:
-      url: https://github.com/weebi-com/filebridge
+    path: ../
 
 dev_dependencies:
   flutter_test:
