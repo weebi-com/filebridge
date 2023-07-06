@@ -24,7 +24,7 @@ abstract class FileLoaderMonolith {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
     final FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image,
-        allowedExtensions: ['jpg', 'jpeg', 'png'],
+        // allowedExtensions: ['jpg', 'jpeg', 'png'], // Custom extension filters are only allowed with FileType.custom
         dialogTitle: 'Choix de la photo',
         initialDirectory: initialDirectory,
         lockParentWindow: true,
