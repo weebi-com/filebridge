@@ -14,13 +14,28 @@ class FileSaver {
 }
 
 abstract class FileSaverV2 {
+  static Future<String?> avoidWebError({String? testFolderPath}) async {
+    if (kIsWeb == false) {
+      if (testFolderPath == null || testFolderPath.isEmpty) {
+        return (await getApplicationDocumentsDirectory()).path;
+      }
+    }
+    return null;
+  }
+
   static Future<String?> savePhoto(
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
-    String? initialDirectory;
-    if (!kIsWeb) {
-      initialDirectory = (await getApplicationDocumentsDirectory()).path;
+    String? initialDirectory =
+        await avoidWebError(testFolderPath: testFolderPath);
+
+    if (testFolderPath != null && testFolderPath.isNotEmpty) {
+      final now = DateTime.now();
+      // testing hack so that i do not need to press ok on dialog
+      final f = await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
+          .writeAsString(content);
+      return f.path;
     }
     return await FilePicker.platform.saveFile(
       type: FileType.image,
@@ -37,15 +52,19 @@ abstract class FileSaverV2 {
       required String fileName,
       String? testFolderPath}) async {
     final now = DateTime.now();
-    String? initialDirectory;
-    if (!kIsWeb) {
-      initialDirectory = (await getApplicationDocumentsDirectory()).path;
+    String? initialDirectory =
+        await avoidWebError(testFolderPath: testFolderPath);
+
+    if (testFolderPath != null && testFolderPath.isNotEmpty) {
+      // testing hack so that i do not need to press ok on dialog
+      return await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
+          .writeAsString(content);
     }
     final String? outputFile = await FilePicker.platform.saveFile(
       type: FileType.custom,
       allowedExtensions: ['csv'],
       dialogTitle: 'Enregistrement du csv',
-      fileName: '${fileName}_${now.hour}h${now.minute}m${now.second}s.csv',
+      fileName: '${now.hour}h${now.minute}m${now.second}s_$fileName',
       initialDirectory: testFolderPath ?? initialDirectory,
       lockParentWindow: true,
     );
@@ -61,15 +80,19 @@ abstract class FileSaverV2 {
       required String fileName,
       String? testFolderPath}) async {
     final now = DateTime.now();
-    String? initialDirectory;
-    if (!kIsWeb) {
-      initialDirectory = (await getApplicationDocumentsDirectory()).path;
+    String? initialDirectory =
+        await avoidWebError(testFolderPath: testFolderPath);
+
+    if (testFolderPath != null && testFolderPath.isNotEmpty) {
+      // testing hack so that i do not need to press ok on dialog
+      return await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
+          .writeAsString(content);
     }
     final String? outputFile = await FilePicker.platform.saveFile(
       type: FileType.custom,
       allowedExtensions: ['json'],
       dialogTitle: 'Enregistrement du json',
-      fileName: '${fileName}_${now.hour}h${now.minute}m${now.second}s.json',
+      fileName: '${now.hour}h${now.minute}m${now.second}s_$fileName',
       initialDirectory: testFolderPath ?? initialDirectory,
       lockParentWindow: true,
     );

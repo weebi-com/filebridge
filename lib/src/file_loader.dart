@@ -1,4 +1,6 @@
 // Dart imports:
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Directory, File, Platform;
