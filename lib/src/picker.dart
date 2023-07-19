@@ -371,6 +371,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
                       SizedBox(
                         width: 200,
                         child: FloatingActionButton.extended(
+                          heroTag: 'Clear temporary files',
                           onPressed: () => _clearCachedFiles(),
                           label: const Text('Clear temporary files'),
                           icon: const Icon(Icons.delete_forever),
