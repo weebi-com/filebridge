@@ -51,6 +51,7 @@ abstract class FileSaverV2 {
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
+    fileName = '$fileName.csv';
     final now = DateTime.now();
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
@@ -79,6 +80,7 @@ abstract class FileSaverV2 {
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
+    fileName = '$fileName.json';
     final now = DateTime.now();
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
