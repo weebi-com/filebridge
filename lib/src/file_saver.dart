@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:document_file_save_plus/document_file_save_plus.dart';
 
 class FileSaver {
   static Future<File> makeFileAndWriteAsStringAsync(
@@ -30,24 +32,35 @@ abstract class FileSaverV2 {
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
 
+    final now = DateTime.now();
+    final fileNameTimestamped =
+        '${now.hour}h${now.minute}m${now.second}s_$fileName.png';
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
-      final now = DateTime.now();
       // testing hack so that i do not need to press ok on dialog
-      final f = await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
-          .writeAsString(content);
+      final f = await File(fileNameTimestamped).writeAsString(content);
       return f.path;
     }
-    return await FilePicker.platform.saveFile(
-      type: FileType.image,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-      dialogTitle: 'Enregistrement de la photo',
-      fileName: fileName,
-      initialDirectory: testFolderPath ?? initialDirectory,
-      lockParentWindow: true,
-    );
+    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      return await FilePicker.platform.saveFile(
+        type: FileType.image,
+        allowedExtensions: ['jpg', 'jpeg', 'png'],
+        dialogTitle: 'Enregistrement de la photo',
+        fileName: fileName,
+        initialDirectory: testFolderPath ?? initialDirectory,
+        lockParentWindow: true,
+      );
+    } else {
+      // iOS or Android
+      final photo = utf8.encode(content);
+      final Uint8List photo1 = Uint8List.fromList(photo);
+      DocumentFileSavePlus.saveFile(photo1, fileNameTimestamped, "image/png");
+      return Platform.isAndroid
+          ? 'Downloads/$fileNameTimestamped'
+          : 'weebi/$fileNameTimestamped';
+    }
   }
 
-  static Future<File> saveCsv(
+  static Future<String> saveCsv(
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
@@ -56,27 +69,36 @@ abstract class FileSaverV2 {
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
 
+    final fileNameTimestamped =
+        '${now.hour}h${now.minute}m${now.second}s_$fileName';
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
       // testing hack so that i do not need to press ok on dialog
-      return await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
-          .writeAsString(content);
+      await File(fileNameTimestamped).writeAsString(content);
+      return fileNameTimestamped;
     }
-    final String? outputFile = await FilePicker.platform.saveFile(
-      type: FileType.custom,
-      allowedExtensions: ['csv'],
-      dialogTitle: 'Enregistrement du csv',
-      fileName: '${now.hour}h${now.minute}m${now.second}s_$fileName',
-      initialDirectory: testFolderPath ?? initialDirectory,
-      lockParentWindow: true,
-    );
-    if (outputFile != null) {
-      return await File(outputFile).writeAsString(content);
+    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      final String? outputFile = await FilePicker.platform.saveFile(
+        type: FileType.custom,
+        allowedExtensions: ['csv'],
+        dialogTitle: 'Enregistrement du csv',
+        fileName: '${now.hour}h${now.minute}m${now.second}s_$fileName',
+        initialDirectory: testFolderPath ?? initialDirectory,
+        lockParentWindow: true,
+      );
+      return outputFile ?? '';
     } else {
-      return File('');
+      // iOS or Android
+      final textBytes = utf8.encode(content);
+      final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+      DocumentFileSavePlus.saveFile(
+          textBytes1, fileNameTimestamped, "text/plain");
+      return Platform.isAndroid
+          ? 'Downloads/$fileNameTimestamped'
+          : 'weebi/$fileNameTimestamped';
     }
   }
 
-  static Future<File> saveJson(
+  static Future<String> saveJson(
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
@@ -85,23 +107,33 @@ abstract class FileSaverV2 {
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
 
+    final fileNameTimestamped =
+        '${now.hour}h${now.minute}m${now.second}s_$fileName';
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
       // testing hack so that i do not need to press ok on dialog
-      return await File('${now.hour}h${now.minute}m${now.second}s_$fileName')
-          .writeAsString(content);
+      await File(fileNameTimestamped).writeAsString(content);
+      return fileNameTimestamped;
     }
-    final String? outputFile = await FilePicker.platform.saveFile(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-      dialogTitle: 'Enregistrement du json',
-      fileName: '${now.hour}h${now.minute}m${now.second}s_$fileName',
-      initialDirectory: testFolderPath ?? initialDirectory,
-      lockParentWindow: true,
-    );
-    if (outputFile != null) {
-      return await File(outputFile).writeAsString(content);
+    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      /// This method is only available on desktop platforms (Linux, macOS & Linux)
+      final String? outputFilePath = await FilePicker.platform.saveFile(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        dialogTitle: 'Enregistrement du json',
+        fileName: fileNameTimestamped,
+        initialDirectory: testFolderPath ?? initialDirectory,
+        lockParentWindow: true,
+      );
+      return outputFilePath ?? '';
     } else {
-      return File('');
+      // iOS or Android
+      final textBytes = utf8.encode(content);
+      final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+      DocumentFileSavePlus.saveFile(
+          textBytes1, fileNameTimestamped, "text/plain");
+      return Platform.isAndroid
+          ? 'Downloads/$fileNameTimestamped'
+          : 'weebi/$fileNameTimestamped'; // probably wrong, user hint only
     }
   }
 }

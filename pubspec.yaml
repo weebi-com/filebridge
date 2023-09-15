@@ -15,6 +15,9 @@ dependencies:
   #file_picker_cross: ^4.6.0 #original ^4.4.1 depends on flutter_file_dialog with too high iOS min dep #^4.2.8 #file_picker: ^3.0.1
   path_provider: ^2.0.15 #^2.0.1 #keep it low 'cause migration is heavy
   spreadsheet_decoder: ^2.2.0
+  # consider using excel package
+  document_file_save_plus: ^1.0.4
+
 
 dev_dependencies:
   flutter_test:
