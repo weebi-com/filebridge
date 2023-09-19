@@ -53,7 +53,7 @@ abstract class FileSaverV2 {
       // iOS or Android
       final photo = utf8.encode(content);
       final Uint8List photo1 = Uint8List.fromList(photo);
-      DocumentFileSavePlus.saveFile(photo1, fileNameTimestamped, "image/png");
+      DocumentFileSavePlus().saveFile(photo1, fileNameTimestamped, "image/png");
       return Platform.isAndroid
           ? 'Downloads/$fileNameTimestamped'
           : 'weebi/$fileNameTimestamped';
@@ -90,8 +90,8 @@ abstract class FileSaverV2 {
       // iOS or Android
       final textBytes = utf8.encode(content);
       final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-      DocumentFileSavePlus.saveFile(
-          textBytes1, fileNameTimestamped, "text/plain");
+      DocumentFileSavePlus()
+          .saveFile(textBytes1, fileNameTimestamped, "text/plain");
       return Platform.isAndroid
           ? 'Downloads/$fileNameTimestamped'
           : 'weebi/$fileNameTimestamped';
@@ -129,8 +129,8 @@ abstract class FileSaverV2 {
       // iOS or Android
       final textBytes = utf8.encode(content);
       final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-      DocumentFileSavePlus.saveFile(
-          textBytes1, fileNameTimestamped, "text/plain");
+      DocumentFileSavePlus()
+          .saveFile(textBytes1, fileNameTimestamped, "text/plain");
       return Platform.isAndroid
           ? 'Downloads/$fileNameTimestamped'
           : 'weebi/$fileNameTimestamped'; // probably wrong, user hint only
