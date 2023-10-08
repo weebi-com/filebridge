@@ -35,13 +35,16 @@ abstract class FileSaverV2 {
     final now = DateTime.now();
     final fileNameTimestamped =
         '${now.hour}h${now.minute}m${now.second}s_$fileName.png';
+
+    final photo = utf8.encode(content);
+    final Uint8List photo1 = Uint8List.fromList(photo);
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
       // testing hack so that i do not need to press ok on dialog
-      final f = await File(fileNameTimestamped).writeAsString(content);
+      final f = await File(fileNameTimestamped).writeAsBytes(photo1);
       return f.path;
     }
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-      return await FilePicker.platform.saveFile(
+      final outputFilePath = await FilePicker.platform.saveFile(
         type: FileType.image,
         allowedExtensions: ['jpg', 'jpeg', 'png'],
         dialogTitle: 'Enregistrement de la photo',
@@ -49,10 +52,14 @@ abstract class FileSaverV2 {
         initialDirectory: testFolderPath ?? initialDirectory,
         lockParentWindow: true,
       );
+      if (outputFilePath != null && outputFilePath.isNotEmpty) {
+        final temp = await File(outputFilePath).writeAsBytes(photo1);
+        return temp.path;
+      } else {
+        return '';
+      }
     } else {
       // iOS or Android
-      final photo = utf8.encode(content);
-      final Uint8List photo1 = Uint8List.fromList(photo);
       DocumentFileSavePlus().saveFile(photo1, fileNameTimestamped, "image/png");
       return Platform.isAndroid
           ? 'Downloads/$fileNameTimestamped'
@@ -64,7 +71,9 @@ abstract class FileSaverV2 {
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
-    fileName = '$fileName.csv';
+    if (fileName.split('.').last != 'csv') {
+      fileName = '$fileName.csv';
+    }
     final now = DateTime.now();
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
@@ -77,7 +86,7 @@ abstract class FileSaverV2 {
       return fileNameTimestamped;
     }
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-      final String? outputFile = await FilePicker.platform.saveFile(
+      final String? outputFilePath = await FilePicker.platform.saveFile(
         type: FileType.custom,
         allowedExtensions: ['csv'],
         dialogTitle: 'Enregistrement du csv',
@@ -85,7 +94,13 @@ abstract class FileSaverV2 {
         initialDirectory: testFolderPath ?? initialDirectory,
         lockParentWindow: true,
       );
-      return outputFile ?? '';
+      if (outputFilePath != null && outputFilePath.isNotEmpty) {
+        final temp =
+            await File(outputFilePath).writeAsString(content.toString());
+        return temp.path;
+      } else {
+        return '';
+      }
     } else {
       // iOS or Android
       final textBytes = utf8.encode(content);
@@ -98,11 +113,17 @@ abstract class FileSaverV2 {
     }
   }
 
+// if(Platform.isMacOS){
+//TODO in macos remove volume/os from return path
+  // substring
+// }
   static Future<String> saveJson(
       {required String content,
       required String fileName,
       String? testFolderPath}) async {
-    fileName = '$fileName.json';
+    if (fileName.split('.').last != 'json') {
+      fileName = '$fileName.json';
+    }
     final now = DateTime.now();
     String? initialDirectory =
         await avoidWebError(testFolderPath: testFolderPath);
@@ -124,7 +145,13 @@ abstract class FileSaverV2 {
         initialDirectory: testFolderPath ?? initialDirectory,
         lockParentWindow: true,
       );
-      return outputFilePath ?? '';
+      if (outputFilePath != null && outputFilePath.isNotEmpty) {
+        final temp =
+            await File(outputFilePath).writeAsString(content.toString());
+        return temp.path;
+      } else {
+        return '';
+      }
     } else {
       // iOS or Android
       final textBytes = utf8.encode(content);

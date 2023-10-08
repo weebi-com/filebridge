@@ -44,7 +44,8 @@ class FilePickerDemoState extends State<FilePickerDemo> {
       _paths = (await FilePicker.platform.pickFiles(
         type: _pickingType,
         allowMultiple: _multiPick,
-        onFileLoading: (FilePickerStatus status) => print(status),
+        onFileLoading: (FilePickerStatus status) =>
+            debugPrint(status.toString()),
         allowedExtensions: (_extension?.isNotEmpty ?? false)
             ? _extension?.replaceAll(' ', '').split(',')
             : null,
@@ -54,7 +55,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
       ))
           ?.files;
     } on PlatformException catch (e) {
-      _logException('Unsupported operation' + e.toString());
+      _logException('Unsupported operation $e');
     } catch (e) {
       _logException(e.toString());
     }
@@ -85,7 +86,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
         ),
       );
     } on PlatformException catch (e) {
-      _logException('Unsupported operation' + e.toString());
+      _logException('Unsupported operation $e');
     } catch (e) {
       _logException(e.toString());
     } finally {
@@ -141,7 +142,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
   }
 
   void _logException(String message) {
-    print(message);
+    debugPrint(message.toString());
     _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -452,6 +453,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
                                           final bool isMultiPath =
                                               _paths != null &&
                                                   _paths!.isNotEmpty;
+                                          // ignore: prefer_interpolation_to_compose_strings
                                           final String name = 'File $index: ' +
                                               (isMultiPath
                                                   ? _paths!
