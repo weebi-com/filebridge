@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:media_store_plus/media_store_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:document_file_save_plus/document_file_save_plus.dart';
 
@@ -16,8 +17,12 @@ class FileSaver {
 }
 
 abstract class FileSaverV2 {
-  static Future<String?> avoidWebError({String? testFolderPath}) async {
+  static Future<String?> getPathAndAvoidWebError(
+      {String? testFolderPath}) async {
     if (kIsWeb == false) {
+      if (Platform.isAndroid) {
+        return (await getApplicationSupportDirectory()).path;
+      }
       if (testFolderPath == null || testFolderPath.isEmpty) {
         return (await getApplicationDocumentsDirectory()).path;
       }
@@ -28,9 +33,10 @@ abstract class FileSaverV2 {
   static Future<String?> savePhoto(
       {required String content,
       required String fileName,
-      String? testFolderPath}) async {
+      String? testFolderPath,
+      MediaStore? mediaStore}) async {
     String? initialDirectory =
-        await avoidWebError(testFolderPath: testFolderPath);
+        await getPathAndAvoidWebError(testFolderPath: testFolderPath);
 
     final now = DateTime.now();
     final fileNameTimestamped =
@@ -59,24 +65,34 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      // iOS or Android
-      DocumentFileSavePlus().saveFile(photo1, fileNameTimestamped, "image/png");
-      return Platform.isAndroid
-          ? 'Downloads/$fileNameTimestamped'
-          : 'weebi/$fileNameTimestamped';
+      //  Android
+      if (Platform.isAndroid && mediaStore != null) {
+        final bool status = await mediaStore.saveFile(
+            tempFilePath: fileName,
+            dirType: DirType.photo,
+            dirName: DirType.photo.defaults);
+        return status ? fileName : '';
+      } else {
+        // iOS
+        DocumentFileSavePlus()
+            .saveFile(photo1, fileNameTimestamped, "image/png");
+        return 'weebi/$fileNameTimestamped';
+      }
     }
   }
 
   static Future<String> saveCsv(
       {required String content,
       required String fileName,
-      String? testFolderPath}) async {
+      String? testFolderPath,
+      MediaStore? mediaStore}) async {
     if (fileName.split('.').last != 'csv') {
       fileName = '$fileName.csv';
     }
+
     final now = DateTime.now();
     String? initialDirectory =
-        await avoidWebError(testFolderPath: testFolderPath);
+        await getPathAndAvoidWebError(testFolderPath: testFolderPath);
 
     final fileNameTimestamped =
         '${now.hour}h${now.minute}m${now.second}s_$fileName';
@@ -102,14 +118,21 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      // iOS or Android
-      final textBytes = utf8.encode(content);
-      final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-      DocumentFileSavePlus()
-          .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-      return Platform.isAndroid
-          ? 'Downloads/$fileNameTimestamped'
-          : 'weebi/$fileNameTimestamped';
+      // Android
+      if (Platform.isAndroid && mediaStore != null) {
+        final bool status = await mediaStore.saveFile(
+            tempFilePath: fileName,
+            dirType: DirType.download,
+            dirName: DirType.download.defaults);
+        return status ? fileName : '';
+      } else {
+        // iOS
+        final textBytes = utf8.encode(content);
+        final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+        DocumentFileSavePlus()
+            .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+        return 'weebi/$fileNameTimestamped';
+      }
     }
   }
 
@@ -120,13 +143,14 @@ abstract class FileSaverV2 {
   static Future<String> saveJson(
       {required String content,
       required String fileName,
-      String? testFolderPath}) async {
+      String? testFolderPath,
+      MediaStore? mediaStore}) async {
     if (fileName.split('.').last != 'json') {
       fileName = '$fileName.json';
     }
     final now = DateTime.now();
     String? initialDirectory =
-        await avoidWebError(testFolderPath: testFolderPath);
+        await getPathAndAvoidWebError(testFolderPath: testFolderPath);
 
     final fileNameTimestamped =
         '${now.hour}h${now.minute}m${now.second}s_$fileName';
@@ -153,14 +177,21 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      // iOS or Android
-      final textBytes = utf8.encode(content);
-      final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-      DocumentFileSavePlus()
-          .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-      return Platform.isAndroid
-          ? 'Downloads/$fileNameTimestamped'
-          : 'weebi/$fileNameTimestamped'; // probably wrong, user hint only
+      // Android
+      if (Platform.isAndroid && mediaStore != null) {
+        final bool status = await mediaStore.saveFile(
+            tempFilePath: fileName,
+            dirType: DirType.download,
+            dirName: DirType.download.defaults);
+        return status ? fileName : '';
+      } else {
+        // iOS
+        final textBytes = utf8.encode(content);
+        final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+        DocumentFileSavePlus()
+            .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+        return 'weebi/$fileNameTimestamped'; // probably wrong, user hint only
+      }
     }
   }
 }

@@ -1,3 +1,7 @@
+## 0.0.5
+
+- ++ file_picker: ^5.5.0
+
 ## 0.0.4
 
 - fix saving file
