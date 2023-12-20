@@ -1,3 +1,7 @@
+## 0.0.6
+
+- added media_store for android annoying ext storage evols
+
 ## 0.0.5
 
 - ++ file_picker: ^5.5.0
