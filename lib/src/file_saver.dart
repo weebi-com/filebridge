@@ -65,18 +65,17 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      //  Android
       if (Platform.isAndroid && mediaStore != null) {
         final bool status = await mediaStore.saveFile(
-            tempFilePath: fileName,
+            tempFilePath: fileNameTimestamped,
             dirType: DirType.photo,
             dirName: DirType.photo.defaults);
-        return status ? fileName : '';
+        return status ? fileNameTimestamped : '';
       } else {
-        // iOS
+        // Android without mediaStore OR iOS
         DocumentFileSavePlus()
             .saveFile(photo1, fileNameTimestamped, "image/png");
-        return 'weebi/$fileNameTimestamped';
+        return '$fileNameTimestamped';
       }
     }
   }
@@ -118,20 +117,19 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      // Android
       if (Platform.isAndroid && mediaStore != null) {
         final bool status = await mediaStore.saveFile(
-            tempFilePath: fileName,
+            tempFilePath: fileNameTimestamped,
             dirType: DirType.download,
             dirName: DirType.download.defaults);
-        return status ? fileName : '';
+        return status ? fileNameTimestamped : '';
       } else {
-        // iOS
+        // Android without mediaStore OR iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
         DocumentFileSavePlus()
             .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-        return 'weebi/$fileNameTimestamped';
+        return '$fileNameTimestamped';
       }
     }
   }
@@ -177,20 +175,19 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      // Android
       if (Platform.isAndroid && mediaStore != null) {
         final bool status = await mediaStore.saveFile(
-            tempFilePath: fileName,
+            tempFilePath: fileNameTimestamped,
             dirType: DirType.download,
             dirName: DirType.download.defaults);
-        return status ? fileName : '';
+        return status ? fileNameTimestamped : '';
       } else {
-        // iOS
+        // Android without mediaStore OR iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
         DocumentFileSavePlus()
             .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-        return 'weebi/$fileNameTimestamped'; // probably wrong, user hint only
+        return '$fileNameTimestamped'; // probably wrong, user hint only
       }
     }
   }

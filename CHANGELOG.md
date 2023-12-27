@@ -1,6 +1,7 @@
-## 0.0.6
+## 0.0.7
 
 - added media_store for android annoying ext storage evols
+- correct path returned if no mediastorage in android
 
 ## 0.0.5
 
