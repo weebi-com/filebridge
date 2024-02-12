@@ -52,7 +52,7 @@ abstract class FileSaverV2 {
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       final outputFilePath = await FilePicker.platform.saveFile(
         type: FileType.image,
-        allowedExtensions: ['jpg', 'jpeg', 'png'],
+        //allowedExtensions: ['jpg', 'jpeg', 'png'], // Custom extension filters are only allowed with FileType.custom
         dialogTitle: 'Enregistrement de la photo',
         fileName: fileName,
         initialDirectory: testFolderPath ?? initialDirectory,
