@@ -30,11 +30,11 @@ abstract class FileSaverV2 {
     return null;
   }
 
-  static Future<String?> savePhoto(
-      {required String content,
-      required String fileName,
-      String? testFolderPath,
-      MediaStore? mediaStore}) async {
+  static Future<String?> savePhoto({
+    required String content,
+    required String fileName,
+    String? testFolderPath,
+  }) async {
     String? initialDirectory =
         await getPathAndAvoidWebError(testFolderPath: testFolderPath);
 
@@ -65,26 +65,35 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      if (Platform.isAndroid && mediaStore != null) {
-        final bool status = await mediaStore.saveFile(
-            tempFilePath: fileNameTimestamped,
-            dirType: DirType.photo,
-            dirName: DirType.photo.defaults);
-        return status ? fileNameTimestamped : '';
+      if (Platform.isAndroid) {
+        final mediaStorePlugin = MediaStore();
+        if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
+          MediaStore.appFolder = "MediaStorePlugin";
+          final bool status = await mediaStorePlugin.saveFile(
+              tempFilePath: fileNameTimestamped,
+              dirType: DirType.photo,
+              dirName: DirType.photo.defaults);
+          return status ? fileNameTimestamped : '';
+        } else {
+          // Android without mediaStore
+          DocumentFileSavePlus()
+              .saveFile(photo1, fileNameTimestamped, "image/png");
+          return fileNameTimestamped;
+        }
       } else {
-        // Android without mediaStore OR iOS
+        //  iOS
         DocumentFileSavePlus()
             .saveFile(photo1, fileNameTimestamped, "image/png");
-        return '$fileNameTimestamped';
+        return fileNameTimestamped;
       }
     }
   }
 
-  static Future<String> saveCsv(
-      {required String content,
-      required String fileName,
-      String? testFolderPath,
-      MediaStore? mediaStore}) async {
+  static Future<String> saveCsv({
+    required String content,
+    required String fileName,
+    String? testFolderPath,
+  }) async {
     if (fileName.split('.').last != 'csv') {
       fileName = '$fileName.csv';
     }
@@ -117,19 +126,30 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      if (Platform.isAndroid && mediaStore != null) {
-        final bool status = await mediaStore.saveFile(
-            tempFilePath: fileNameTimestamped,
-            dirType: DirType.download,
-            dirName: DirType.download.defaults);
-        return status ? fileNameTimestamped : '';
+      if (Platform.isAndroid) {
+        final mediaStorePlugin = MediaStore();
+        if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
+          MediaStore.appFolder = "MediaStorePlugin";
+          final bool status = await mediaStorePlugin.saveFile(
+              tempFilePath: fileNameTimestamped,
+              dirType: DirType.download,
+              dirName: DirType.download.defaults);
+          return status ? fileNameTimestamped : '';
+        } else {
+          // Android without mediaStore
+          final textBytes = utf8.encode(content);
+          final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+          DocumentFileSavePlus()
+              .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+          return fileNameTimestamped;
+        }
       } else {
-        // Android without mediaStore OR iOS
+        //  iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
         DocumentFileSavePlus()
             .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-        return '$fileNameTimestamped';
+        return fileNameTimestamped;
       }
     }
   }
@@ -138,11 +158,11 @@ abstract class FileSaverV2 {
 //TODO in macos remove volume/os from return path
   // substring
 // }
-  static Future<String> saveJson(
-      {required String content,
-      required String fileName,
-      String? testFolderPath,
-      MediaStore? mediaStore}) async {
+  static Future<String> saveJson({
+    required String content,
+    required String fileName,
+    String? testFolderPath,
+  }) async {
     if (fileName.split('.').last != 'json') {
       fileName = '$fileName.json';
     }
@@ -175,19 +195,30 @@ abstract class FileSaverV2 {
         return '';
       }
     } else {
-      if (Platform.isAndroid && mediaStore != null) {
-        final bool status = await mediaStore.saveFile(
-            tempFilePath: fileNameTimestamped,
-            dirType: DirType.download,
-            dirName: DirType.download.defaults);
-        return status ? fileNameTimestamped : '';
+      if (Platform.isAndroid) {
+        final mediaStorePlugin = MediaStore();
+        if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
+          MediaStore.appFolder = "MediaStorePlugin";
+          final bool status = await mediaStorePlugin.saveFile(
+              tempFilePath: fileNameTimestamped,
+              dirType: DirType.download,
+              dirName: DirType.download.defaults);
+          return status ? fileNameTimestamped : '';
+        } else {
+          // Android without mediaStore
+          final textBytes = utf8.encode(content);
+          final Uint8List textBytes1 = Uint8List.fromList(textBytes);
+          DocumentFileSavePlus()
+              .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+          return fileNameTimestamped; // probably wrong, user hint only
+        }
       } else {
-        // Android without mediaStore OR iOS
+        // iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
         DocumentFileSavePlus()
             .saveFile(textBytes1, fileNameTimestamped, "text/plain");
-        return '$fileNameTimestamped'; // probably wrong, user hint only
+        return fileNameTimestamped; // probably wrong, user hint only
       }
     }
   }
