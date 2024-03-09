@@ -1,3 +1,7 @@
+## 0.0.9
+
+- fix mediastore for android device not needing it
+
 ## 0.0.7
 
 - added media_store for android annoying ext storage evols
