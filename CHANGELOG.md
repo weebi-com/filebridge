@@ -1,5 +1,6 @@
-## 0.0.10
+## 0.0.11
 
+- bumping constraints
 - catch platformException
 
 ## 0.0.9
