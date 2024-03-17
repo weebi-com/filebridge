@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 // Package imports:
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
 
@@ -72,10 +73,15 @@ abstract class FileLoaderMonolith {
       if (Platform.isMacOS || Platform.isWindows) {
         final initialDirectory =
             (await getApplicationDocumentsDirectory()).path;
-        final result = await openFile(
-            initialDirectory: initialDirectory,
-            acceptedTypeGroups: [excelTypeGroup]);
-        return File(result?.path ?? '');
+        try {
+          final result = await openFile(
+              initialDirectory: initialDirectory,
+              acceptedTypeGroups: [excelTypeGroup]);
+          return File(result?.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       } else {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
             type: FileType.custom, allowedExtensions: ['xls', 'xlsx', 'xlsm']);
@@ -94,10 +100,15 @@ abstract class FileLoaderMonolith {
       if (Platform.isMacOS || Platform.isWindows) {
         final initialDirectory =
             (await getApplicationDocumentsDirectory()).path;
-        final result = await openFile(
-            initialDirectory: initialDirectory,
-            acceptedTypeGroups: [csvTypeGroup]);
-        return File(result?.path ?? '');
+        try {
+          final result = await openFile(
+              initialDirectory: initialDirectory,
+              acceptedTypeGroups: [csvTypeGroup]);
+          return File(result?.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       } else {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
             type: FileType.custom, allowedExtensions: ['csv', 'tsv', 'txt']);
@@ -116,12 +127,17 @@ abstract class FileLoaderMonolith {
       if (Platform.isMacOS || Platform.isWindows) {
         final initialDirectory =
             (await getApplicationDocumentsDirectory()).path;
-        final result = await openFile(
-            initialDirectory: initialDirectory,
-            acceptedTypeGroups: [
-              const XTypeGroup(label: 'json', extensions: ['json'])
-            ]);
-        return File(result?.path ?? '');
+        try {
+          final result = await openFile(
+              initialDirectory: initialDirectory,
+              acceptedTypeGroups: [
+                const XTypeGroup(label: 'json', extensions: ['json'])
+              ]);
+          return File(result?.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       } else {
         FilePickerResult? result = await FilePicker.platform
             .pickFiles(type: FileType.custom, allowedExtensions: ['json']);
