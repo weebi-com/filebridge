@@ -1,3 +1,7 @@
+## 0.0.10
+
+- catch platformException
+
 ## 0.0.9
 
 - fix mediastore for android device not needing it
