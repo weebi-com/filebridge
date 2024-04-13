@@ -69,7 +69,7 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final bool status = await mediaStorePlugin.saveFile(
+          final status = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.photo,
               dirName: DirType.photo.defaults);
@@ -130,7 +130,7 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final bool status = await mediaStorePlugin.saveFile(
+          final status = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.download,
               dirName: DirType.download.defaults);
@@ -199,7 +199,7 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final bool status = await mediaStorePlugin.saveFile(
+          final status = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.download,
               dirName: DirType.download.defaults);
