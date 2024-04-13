@@ -1,6 +1,6 @@
 name: filebridge
 description: file imports and exports 
-version: 0.0.12
+version: 0.0.13
 homepage: http://weebi.com/
 
 environment:
@@ -18,7 +18,7 @@ dependencies:
   # consider using excel package
   document_file_save_plus: ^2.0.0
     #for windows consider publishing in another pub
-  media_store_plus: ^0.0.7
+  media_store_plus: ^0.1.1
 
 dev_dependencies:
   flutter_test:

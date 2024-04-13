@@ -69,11 +69,15 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final status = await mediaStorePlugin.saveFile(
+          final saveInfo = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.photo,
               dirName: DirType.photo.defaults);
-          return status ? fileNameTimestamped : '';
+          if (saveInfo != null && saveInfo.isSuccessful) {
+            return saveInfo.uri.path;
+          } else {
+            return '';
+          }
         } else {
           // Android without mediaStore
           DocumentFileSavePlus()
@@ -130,11 +134,15 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final status = await mediaStorePlugin.saveFile(
+          final saveInfo = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.download,
               dirName: DirType.download.defaults);
-          return status ? fileNameTimestamped : '';
+          if (saveInfo != null && saveInfo.isSuccessful) {
+            return saveInfo.uri.path;
+          } else {
+            return '';
+          }
         } else {
           // Android without mediaStore
           final textBytes = utf8.encode(content);
@@ -199,11 +207,15 @@ abstract class FileSaverV2 {
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
-          final status = await mediaStorePlugin.saveFile(
+          final saveInfo = await mediaStorePlugin.saveFile(
               tempFilePath: fileNameTimestamped,
               dirType: DirType.download,
               dirName: DirType.download.defaults);
-          return status ? fileNameTimestamped : '';
+          if (saveInfo != null && saveInfo.isSuccessful) {
+            return saveInfo.uri.path;
+          } else {
+            return '';
+          }
         } else {
           // Android without mediaStore
           final textBytes = utf8.encode(content);
