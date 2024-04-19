@@ -26,9 +26,12 @@ abstract class FileLoaderMonolith {
   static Future<File> loadPhotoFromUserPick() async {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
     final FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowCompression: false, // otherwise will crash on android 9
+        compressionQuality: 0,
         type: FileType.image,
         // allowedExtensions: ['jpg', 'jpeg', 'png'], // Custom extension filters are only allowed with FileType.custom
-        dialogTitle: 'Choix de la photo',
+        dialogTitle:
+            'Choix de la photo', // TODO : l10n this, only displayed on desktop
         initialDirectory: initialDirectory,
         lockParentWindow: true,
         allowMultiple: false);
@@ -84,7 +87,9 @@ abstract class FileLoaderMonolith {
         }
       } else {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
-            type: FileType.custom, allowedExtensions: ['xls', 'xlsx', 'xlsm']);
+            allowCompression: false,
+            type: FileType.custom,
+            allowedExtensions: ['xls', 'xlsx', 'xlsm']);
         return File(result?.files.first.path ?? '');
       }
     } else {
@@ -111,7 +116,9 @@ abstract class FileLoaderMonolith {
         }
       } else {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
-            type: FileType.custom, allowedExtensions: ['csv', 'tsv', 'txt']);
+            allowCompression: false,
+            type: FileType.custom,
+            allowedExtensions: ['csv', 'tsv', 'txt']);
         return File(result?.files.first.path ?? '');
       }
     } else {
@@ -139,8 +146,10 @@ abstract class FileLoaderMonolith {
           return File('');
         }
       } else {
-        FilePickerResult? result = await FilePicker.platform
-            .pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowCompression: false,
+            type: FileType.custom,
+            allowedExtensions: ['json']);
         return File(result?.files.first.path ?? '');
       }
     } else {
