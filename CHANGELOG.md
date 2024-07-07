@@ -1,3 +1,8 @@
+## 0.0.15
+
+- savePhotos
+- add path in yaml
+
 ## 0.0.14
 
 - bump filepicker
