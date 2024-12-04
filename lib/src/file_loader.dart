@@ -23,25 +23,34 @@ const photoTypeGroup =
     XTypeGroup(label: 'photo', extensions: ['jpg', 'jpeg', 'png']);
 
 abstract class FileLoaderMonolith {
-  static Future<File> loadPhotoFromUserPick() async {
+  static Future<File> loadPhotoFromUserPick({String titlel10n = ''}) async {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
     final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowCompression: false, // otherwise will crash on android 9
-        compressionQuality: 0,
-        type: FileType.image,
-        // allowedExtensions: ['jpg', 'jpeg', 'png'], // Custom extension filters are only allowed with FileType.custom
-        dialogTitle:
-            'Choix de la photo', // TODO : l10n this, only displayed on desktop
+        allowCompression: (kIsWeb == false && Platform.isAndroid)
+            ? false
+            : true, // otherwise will crash on android 9
+        compressionQuality: (kIsWeb == false && Platform.isAndroid) ? 0 : 30,
+        type: FileType
+            .custom, // https://github.com/miguelpruivo/flutter_file_picker/issues/1534#issuecomment-2410581445
+        allowedExtensions: [
+          'jpg',
+          'jpeg',
+          'png'
+        ], // Custom extension filters are only allowed with FileType.custom
+        dialogTitle: titlel10n.isNotEmpty ? titlel10n : 'Choix de la photo',
         initialDirectory: initialDirectory,
         lockParentWindow: true,
         allowMultiple: false);
     return File(result?.files.first.path ?? '');
   }
 
-  static Future<Directory> loadFolderFromUserPick() async {
+  static Future<Directory> loadFolderFromUserPick(
+      {String titlel10n = ''}) async {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
     final String? result = await FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Choix du dossier contenant les photos',
+      dialogTitle: titlel10n.isNotEmpty
+          ? titlel10n
+          : 'Choix du dossier contenant les photos',
       initialDirectory: initialDirectory,
       lockParentWindow: true,
     );

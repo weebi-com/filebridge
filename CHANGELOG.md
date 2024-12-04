@@ -1,3 +1,7 @@
+## 0.0.16
+
+- fix android photo selection by giving flutter_file_picker/issues/1534 a try
+
 ## 0.0.15
 
 - savePhotos
