@@ -25,56 +25,78 @@ const photoTypeGroup =
 abstract class FileLoaderMonolith {
   static Future<File> loadPhotoFromUserPick({String titlel10n = ''}) async {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowCompression: (kIsWeb == false && Platform.isAndroid)
-            ? false
-            : true, // otherwise will crash on android 9
-        compressionQuality: (kIsWeb == false && Platform.isAndroid) ? 0 : 30,
-        type: FileType
-            .custom, // https://github.com/miguelpruivo/flutter_file_picker/issues/1534#issuecomment-2410581445
-        allowedExtensions: [
-          'jpg',
-          'jpeg',
-          'png'
-        ], // Custom extension filters are only allowed with FileType.custom
-        dialogTitle: titlel10n.isNotEmpty ? titlel10n : 'Choix de la photo',
-        initialDirectory: initialDirectory,
-        lockParentWindow: true,
-        allowMultiple: false);
-    return File(result?.files.first.path ?? '');
+
+    try {
+      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+          allowCompression: (kIsWeb == false && Platform.isAndroid)
+              ? false
+              : true, // otherwise will crash on android 9
+          compressionQuality: (kIsWeb == false && Platform.isAndroid) ? 0 : 30,
+          type: FileType
+              .custom, // https://github.com/miguelpruivo/flutter_file_picker/issues/1534#issuecomment-2410581445
+          allowedExtensions: [
+            'jpg',
+            'jpeg',
+            'png'
+          ], // Custom extension filters are only allowed with FileType.custom
+          dialogTitle: titlel10n.isNotEmpty ? titlel10n : 'Choix de la photo',
+          initialDirectory: initialDirectory,
+          lockParentWindow: true,
+          allowMultiple: false);
+      return File(result?.files.first.path ?? '');
+    } on PlatformException catch (e) {
+      print(e);
+      return File('');
+    }
   }
 
   static Future<Directory> loadFolderFromUserPick(
       {String titlel10n = ''}) async {
     final initialDirectory = (await getApplicationDocumentsDirectory()).path;
-    final String? result = await FilePicker.platform.getDirectoryPath(
-      dialogTitle: titlel10n.isNotEmpty
-          ? titlel10n
-          : 'Choix du dossier contenant les photos',
-      initialDirectory: initialDirectory,
-      lockParentWindow: true,
-    );
-    return Directory(result ?? '');
-  }
 
-  static Future<List<List<dynamic>>> decodeExcelFilePath(
-      String filePath) async {
-    if (filePath.isEmpty) {
-      return [];
-    } else {
-      final bytes = File(filePath).readAsBytesSync();
-      final decoder = SpreadsheetDecoder.decodeBytes(bytes);
-      final table = decoder.tables.values.first; // first tab in file
-      return table.rows;
+    try {
+      final String? result = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: titlel10n.isNotEmpty
+            ? titlel10n
+            : 'Choix du dossier contenant les photos',
+        initialDirectory: initialDirectory,
+        lockParentWindow: true,
+      );
+      return Directory(result ?? '');
+    } on PlatformException catch (e) {
+      print(e);
+      return Directory('');
     }
   }
 
+  static List<List<dynamic>> decodeExcelFilePath(String filePath) {
+    if (filePath.isEmpty) {
+      return [];
+    } else {
+      try {
+        final bytes = File(filePath).readAsBytesSync();
+        final decoder = SpreadsheetDecoder.decodeBytes(bytes);
+        final table = decoder.tables.values.first; // first tab in file
+        return table.rows;
+      } on PlatformException catch (e) {
+        print(e);
+        return [];
+      }
+    }
+  }
+
+// used ?
   static Future<dynamic> decodeJsonFilePath(String filePath) async {
     if (filePath.isEmpty) {
       return [];
     } else {
-      final loadedJsonFile = await File(filePath).readAsString();
-      return jsonDecode(loadedJsonFile);
+      try {
+        final loadedJsonFile = await File(filePath).readAsString();
+        return jsonDecode(loadedJsonFile);
+      } on PlatformException catch (e) {
+        print(e);
+        return null;
+      }
     }
   }
 
@@ -95,11 +117,16 @@ abstract class FileLoaderMonolith {
           return File('');
         }
       } else {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-            allowCompression: false,
-            type: FileType.custom,
-            allowedExtensions: ['xls', 'xlsx', 'xlsm']);
-        return File(result?.files.first.path ?? '');
+        try {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+              allowCompression: false,
+              type: FileType.custom,
+              allowedExtensions: ['xls', 'xlsx', 'xlsm']);
+          return File(result?.files.first.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       }
     } else {
       print('web not supported yet');
@@ -124,11 +151,16 @@ abstract class FileLoaderMonolith {
           return File('');
         }
       } else {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-            allowCompression: false,
-            type: FileType.custom,
-            allowedExtensions: ['csv', 'tsv', 'txt']);
-        return File(result?.files.first.path ?? '');
+        try {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+              allowCompression: false,
+              type: FileType.custom,
+              allowedExtensions: ['csv', 'tsv', 'txt']);
+          return File(result?.files.first.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       }
     } else {
       print('web not supported yet');
@@ -155,11 +187,16 @@ abstract class FileLoaderMonolith {
           return File('');
         }
       } else {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-            allowCompression: false,
-            type: FileType.custom,
-            allowedExtensions: ['json']);
-        return File(result?.files.first.path ?? '');
+        try {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+              allowCompression: false,
+              type: FileType.custom,
+              allowedExtensions: ['json']);
+          return File(result?.files.first.path ?? '');
+        } on PlatformException catch (e) {
+          print(e);
+          return File('');
+        }
       }
     } else {
       print('web not supported yet');
