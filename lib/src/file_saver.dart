@@ -67,10 +67,11 @@ abstract class FileSaverV2 {
 
         for (final dd in data) {
           final path = join(outputFilePath, dd.titleAndExt);
-          print(path);
+
           try {
-            final isOK = await File(path).writeAsBytes(dd.content.toList());
+            await File(path).writeAsBytes(dd.content.toList());
           } catch (e) {
+            // ignore: avoid_print
             print(e);
           }
         }
