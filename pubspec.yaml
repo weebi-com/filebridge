@@ -1,6 +1,6 @@
 name: filebridge
 description: file imports and exports 
-version: 0.0.16
+version: 0.0.17
 homepage: http://weebi.com/
 
 environment:
