@@ -81,6 +81,8 @@ abstract class FileSaverV2 {
       }
     } else {
       if (Platform.isAndroid) {
+        await MediaStore.ensureInitialized();
+
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
@@ -154,6 +156,7 @@ abstract class FileSaverV2 {
       }
     } else {
       if (Platform.isAndroid) {
+        await MediaStore.ensureInitialized();
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";
@@ -227,6 +230,7 @@ abstract class FileSaverV2 {
       }
     } else {
       if (Platform.isAndroid) {
+        await MediaStore.ensureInitialized();
         final mediaStorePlugin = MediaStore();
         if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
           MediaStore.appFolder = "MediaStorePlugin";

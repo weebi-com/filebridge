@@ -1,4 +1,10 @@
 
+## 0.0.18
+
+- fix MediaStoreNotInitializedException: MediaStore has not yet been initialized. 
+  - with 'await MediaStore.ensureInitialized()
+  - "It should be called only once", yet here it is called several times we'll see
+
 ## 0.0.17
 
 - ++ exception catching
