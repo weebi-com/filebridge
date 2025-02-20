@@ -1,6 +1,7 @@
-## 0.0.16
+## 0.0.16+1
 
 - fix android photo selection by giving flutter_file_picker/issues/1534 a try
+- fix testPath
 
 ## 0.0.15
 

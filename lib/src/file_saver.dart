@@ -132,8 +132,10 @@ abstract class FileSaverV2 {
         '${now.hour}h${now.minute}m${now.second}s_$fileName';
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
       // testing hack so that i do not need to press ok on dialog
-      await File(fileNameTimestamped).writeAsString(content);
-      return fileNameTimestamped;
+      final path =
+          testFolderPath + Platform.pathSeparator + fileNameTimestamped;
+      await File(path).writeAsString(content);
+      return path;
     }
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       final String? outputFilePath = await FilePicker.platform.saveFile(
@@ -204,8 +206,10 @@ abstract class FileSaverV2 {
         '${now.hour}h${now.minute}m${now.second}s_$fileName';
     if (testFolderPath != null && testFolderPath.isNotEmpty) {
       // testing hack so that i do not need to press ok on dialog
-      await File(fileNameTimestamped).writeAsString(content);
-      return fileNameTimestamped;
+      final path =
+          testFolderPath + Platform.pathSeparator + fileNameTimestamped;
+      await File(path).writeAsString(content);
+      return path;
     }
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       /// This method is only available on desktop platforms (Linux, macOS & Linux)
