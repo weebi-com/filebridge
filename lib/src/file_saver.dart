@@ -118,6 +118,14 @@ abstract class FileSaverV2 {
     }
   }
 
+  /// ANDROID 
+  ///  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  ///  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  ///  For Android 10 and above, you also need to request the `MANAGE_EXTERNAL_STORAGE` permission if you want to access all files on the device.
+  ///  <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+  ///
+  /// iOS
+  /// also require store permission
   static Future<String> saveCsv(
       {required String content,
       required String fileName,
