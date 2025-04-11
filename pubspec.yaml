@@ -15,7 +15,11 @@ dependencies:
   path_provider: ^2.0.15 #^2.0.1 #keep it low 'cause migration is heavy
   spreadsheet_decoder: ^2.2.0
   # consider using excel package
-  document_file_save_plus: ^2.0.0
+  document_file_save_plus: ^2.0.0 
+  #- 2.0.1 not yet
+    #git:
+    #  url: https://github.com/advoques/document_file_save_plus
+    #  ref: c40a4d10f27ae0d218090f6dbf704130a7b49677
     #for windows consider publishing in another pub
   media_store_plus: ^0.1.3
   path: ^1.9.0
