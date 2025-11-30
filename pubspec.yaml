@@ -1,6 +1,6 @@
 name: filebridge
 description: file imports and exports 
-version: 0.0.18+2
+version: 0.0.19
 homepage: http://weebi.com/
 repository: https://github.com/weebi-com/filebridge
 issue_tracker: https://github.com/weebi-com/filebridge/issues
@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   file_picker: ^8.0.1 #^6.2.0 #^5.5.0 #5.5.0 #^4.6.1
   file_selector: ^1.0.3 #^0.9.3
+  image_picker: ^1.0.7
   path_provider: ^2.0.15 #^2.0.1 #keep it low 'cause migration is heavy
   spreadsheet_decoder: ^2.2.0
   # consider using excel package

@@ -1,11 +1,14 @@
+// ignore_for_file: unintended_html_in_doc_comment
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:media_store_plus/media_store_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:document_file_save_plus/document_file_save_plus.dart';
+// Conditional imports - only on Android/iOS
+import 'package:media_store_plus/media_store_plus.dart' if (dart.library.html) 'package:filebridge/src/file_saver_stub.dart';
+import 'package:document_file_save_plus/document_file_save_plus.dart' if (dart.library.html) 'package:filebridge/src/file_saver_stub.dart';
 
 class FileSaver {
   static Future<File> makeFileAndWriteAsStringAsync(

@@ -1,3 +1,9 @@
+## 0.0.19 - nov 202
+
+- Android: Uses image_picker with ImageSource.gallery (Photo Picker, no permissions)
+- Android: No longer requires READ_MEDIA_IMAGES or READ_EXTERNAL_STORAGE permissions
+
+
 ## 0.0.18+1
 
 - fix MediaStoreNotInitializedException: MediaStore has not yet been initialized. 
