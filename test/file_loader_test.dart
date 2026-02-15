@@ -1,8 +1,42 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:filebridge/src/file_loader.dart';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:filebridge/src/file_loader.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() {
+    // Register FilePickerIO so FilePicker.platform is set (avoids LateInitializationError)
+    FilePickerIO.registerWith();
+
+    // Mock path_provider - no native implementation in tests
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'getApplicationDocumentsDirectory') {
+          return Directory.systemTemp.path;
+        }
+        return null;
+      },
+    );
+
+    // Mock file_picker - return null to simulate user canceling the dialog
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      MethodChannel(
+        'miguelruivo.flutter.plugins.filepicker',
+        Platform.isLinux || Platform.isWindows || Platform.isMacOS
+            ? const JSONMethodCodec()
+            : const StandardMethodCodec(),
+      ),
+      (MethodCall methodCall) async => null,
+    );
+  });
+
   group('FileLoaderMonolith.loadPhotoFromUserPick', () {
     test('should return File type (not XFile)', () async {
       // This test verifies the return type is File, not XFile
