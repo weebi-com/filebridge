@@ -4,6 +4,7 @@ version: 0.0.19
 homepage: https://weebi.com/
 repository: https://github.com/weebi-com/filebridge
 issue_tracker: https://github.com/weebi-com/filebridge/issues
+publish_to: none
 
 environment:
   sdk: '>=2.19.6 <4.0.0'
