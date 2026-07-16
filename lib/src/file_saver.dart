@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 // Conditional imports - only on Android/iOS
 import 'package:media_store_plus/media_store_plus.dart' if (dart.library.html) 'package:filebridge/src/file_saver_stub.dart';
@@ -38,6 +39,21 @@ abstract class FileSaverV2 {
       }
     }
     return null;
+  }
+
+  /// Soft-fail wrapper around DocumentFileSavePlus.
+  /// App owns permission UX/manifest; we only avoid crashing on denial/errors.
+  static Future<bool> _tryDocumentFileSave(Future<void> Function() save) async {
+    try {
+      await save();
+      return true;
+    } on PlatformException catch (e) {
+      debugPrint('DocumentFileSavePlus failed: ${e.code} ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('DocumentFileSavePlus failed: $e');
+      return false;
+    }
   }
 
   static Future<String> savePhotos(
@@ -100,21 +116,31 @@ abstract class FileSaverV2 {
           }
         } else {
           // Android without mediaStore
-          DocumentFileSavePlus().saveMultipleFiles(
-            dataList: data.map((e) => e.content).toList(),
-            fileNameList: data.map((e) => e.titleAndExt).toList(),
-            mimeTypeList: data.map((e) => PhotoFileForSave.mime).toList(),
+          final ok = await _tryDocumentFileSave(
+            () => DocumentFileSavePlus().saveMultipleFiles(
+              dataList: data.map((e) => e.content).toList(),
+              fileNameList: data.map((e) => e.titleAndExt).toList(),
+              mimeTypeList: data.map((e) => PhotoFileForSave.mime).toList(),
+            ),
           );
+          if (!ok) {
+            return '';
+          }
           final downloadDir = await getDownloadsDirectory();
           return downloadDir?.path ?? '';
         }
       } else {
         //  iOS
-        DocumentFileSavePlus().saveMultipleFiles(
-          dataList: data.map((e) => e.content).toList(),
-          fileNameList: data.map((e) => e.titleAndExt).toList(),
-          mimeTypeList: data.map((e) => PhotoFileForSave.mime).toList(),
+        final ok = await _tryDocumentFileSave(
+          () => DocumentFileSavePlus().saveMultipleFiles(
+            dataList: data.map((e) => e.content).toList(),
+            fileNameList: data.map((e) => e.titleAndExt).toList(),
+            mimeTypeList: data.map((e) => PhotoFileForSave.mime).toList(),
+          ),
         );
+        if (!ok) {
+          return '';
+        }
         final downloadDir = await getDownloadsDirectory();
         return downloadDir?.path ?? '';
       }
@@ -186,16 +212,26 @@ abstract class FileSaverV2 {
           // Android without mediaStore
           final textBytes = utf8.encode(content);
           final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-          DocumentFileSavePlus()
-              .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+          final ok = await _tryDocumentFileSave(
+            () => DocumentFileSavePlus()
+                .saveFile(textBytes1, fileNameTimestamped, "text/plain"),
+          );
+          if (!ok) {
+            return '';
+          }
           return fileNameTimestamped;
         }
       } else {
         //  iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-        DocumentFileSavePlus()
-            .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+        final ok = await _tryDocumentFileSave(
+          () => DocumentFileSavePlus()
+              .saveFile(textBytes1, fileNameTimestamped, "text/plain"),
+        );
+        if (!ok) {
+          return '';
+        }
         return fileNameTimestamped;
       }
     }
@@ -262,16 +298,26 @@ abstract class FileSaverV2 {
           // Android without mediaStore
           final textBytes = utf8.encode(content);
           final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-          DocumentFileSavePlus()
-              .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+          final ok = await _tryDocumentFileSave(
+            () => DocumentFileSavePlus()
+                .saveFile(textBytes1, fileNameTimestamped, "text/plain"),
+          );
+          if (!ok) {
+            return '';
+          }
           return fileNameTimestamped; // probably wrong, user hint only
         }
       } else {
         // iOS
         final textBytes = utf8.encode(content);
         final Uint8List textBytes1 = Uint8List.fromList(textBytes);
-        DocumentFileSavePlus()
-            .saveFile(textBytes1, fileNameTimestamped, "text/plain");
+        final ok = await _tryDocumentFileSave(
+          () => DocumentFileSavePlus()
+              .saveFile(textBytes1, fileNameTimestamped, "text/plain"),
+        );
+        if (!ok) {
+          return '';
+        }
         return fileNameTimestamped; // probably wrong, user hint only
       }
     }
